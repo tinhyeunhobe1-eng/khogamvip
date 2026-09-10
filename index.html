@@ -6,64 +6,6 @@
     <title>Kho Game VIP</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
-        body{background:linear-gradient(135deg,#0f172a,#1e293b);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+        body{background:linear-gradient(135deg,#0f172a,#1e293b);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
         .rocket{font-size:60px;margin-bottom:10px}
-        h1{color:#fff;font-size:30px;margin-bottom:8px;text-align:center}
-        .subtitle{color:#94a3b8;margin-bottom:30px;font-size:15px;text-align:center}
-        input{width:100%;max-width:360px;padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;margin-bottom:15px;outline:none}
-        input:focus{border-color:#3b82f6}
-        button{width:100%;max-width:360px;padding:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:30px}
-        .result{width:100%;max-width:360px;display:none}
-        .result.show{display:block}
-        .game-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;margin-bottom:12px}
-        .game-name{color:#fff;font-size:16px;font-weight:500;margin-bottom:8px}
-        .download-btn{display:block;background:#10b981;color:#fff;padding:12px;border-radius:8px;text-align:center;text-decoration:none;font-weight:500;font-size:15px}
-        .download-btn:hover{background:#059669}
-        .no-game{color:#94a3b8;text-align:center;padding:20px;font-size:14px}
-    </style>
-</head>
-<body>
-    <div class="rocket">🚀</div>
-    <h1>Kho Game VIP</h1>
-    <p class="subtitle">Nhập UDID của bạn để xem danh sách game</p>
-    
-    <input type="text" id="udid-input" placeholder="VD: 12345678-1234567890ABCDEF">
-    <button onclick="timGame()">Xem Game Của Tôi</button>
-    
-    <div class="result" id="result">
-        <div id="game-list"></div>
-    </div>
-
-    <script>
-        function timGame() {
-            const udidNhap = document.getElementById('udid-input').value.trim().toUpperCase();
-            const gameListEl = document.getElementById('game-list');
-            const resultEl = document.getElementById('result');
-            
-            if (!udidNhap) {
-                alert('⚠️ Vui lòng nhập UDID!');
-                return;
-            }
-            
-            // Lấy danh sách khách từ localStorage
-            const khachList = JSON.parse(localStorage.getItem('khachList') || '[]');
-            
-            // Tìm tất cả game có UDID khớp
-            const gameCuaKhach = khachList.filter(k => k.udid.toUpperCase() === udidNhap);
-            
-            if (gameCuaKhach.length === 0) {
-                gameListEl.innerHTML = '<p class="no-game">❌ UDID chưa được cấp game nào<br>Liên hệ quản trị viên nhé!</p>';
-            } else {
-                gameListEl.innerHTML = gameCuaKhach.map(k => `
-                    <div class="game-item">
-                        <div class="game-name">🎮 ${k.appname}</div>
-                        <a href="${k.link}" target="_blank" class="download-btn">📥 Tải File IPA</a>
-                    </div>
-                `).join('');
-            }
-            
-            resultEl.classList.add('show');
-        }
-    </script>
-</body>
-</html>
+        h1{color:#fff;font-size
