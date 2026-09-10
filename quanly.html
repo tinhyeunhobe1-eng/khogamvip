@@ -62,32 +62,74 @@
         button:hover {
             background: #0077ed;
         }
-        .back-link {
-            display: block;
+        .success-box {
             text-align: center;
-            margin-top: 20px;
-            color: #0071e3;
-            text-decoration: none;
-            font-size: 14px;
+            display: none;
+        }
+        .success-box.show {
+            display: block;
+        }
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        .success-text {
+            color: #10b981;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .hidden-form {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>➕ Thêm Game cho Khách</h1>
-        <form action="https://api.sheetmonkey.io/form/keue3PUCyacAm5FWThpquj" method="POST">
-            <label for="udid">UDID của khách:</label>
-            <input type="text" id="udid" name="UDID" placeholder="VD: 00008110-000869CE110A801E" required>
-            
-            <label for="ten">Tên ứng dụng:</label>
-            <input type="text" id="ten" name="TenUngDung" placeholder="VD: Liên quân chống tố" required>
-            
-            <label for="link">Link tải IPA:</label>
-            <input type="url" id="link" name="LinkIPA" placeholder="https://..." required>
-            
-            <button type="submit">📤 Lưu vào Kho Dữ Liệu</button>
-        </form>
-        <a href="/" class="back-link">← Quay lại trang chủ</a>
+        <!-- Form nhập liệu -->
+        <div id="form-box">
+            <h1>➕ Thêm Game cho Khách</h1>
+            <form action="https://api.sheetmonkey.io/form/keue3PUCyacAm5FWThpquj" method="POST">
+                <input type="hidden" name="x-sheetmonkey-redirect" value="" id="redirect-input">
+                
+                <label for="udid">UDID của khách:</label>
+                <input type="text" id="udid" name="UDID" placeholder="VD: 00008110-000869CE110A801E" required>
+                
+                <label for="ten">Tên ứng dụng:</label>
+                <input type="text" id="ten" name="TenUngDung" placeholder="VD: Liên quân chống tố" required>
+                
+                <label for="link">Link tải IPA:</label>
+                <input type="url" id="link" name="LinkIPA" placeholder="https://..." required>
+                
+                <button type="submit">📤 Lưu vào Kho Dữ Liệu</button>
+            </form>
+        </div>
+        
+        <!-- Thông báo thành công -->
+        <div id="success-box" class="success-box">
+            <div class="success-icon">✅</div>
+            <div class="success-text">Đã lưu thành công!</div>
+            <p style="color:#666;margin-bottom:20px">Dữ liệu đã vào Google Sheets.<br>Khách gõ UDID là thấy game ngay!</p>
+            <button onclick="taiLaiForm()">🔄 Thêm game khác</button>
+        </div>
     </div>
+
+    <script>
+        // Tự động điền trang hiện tại để sau khi lưu sẽ quay lại
+        document.getElementById('redirect-input').value = window.location.href;
+        
+        // Hiện thông báo thành công nếu có tham số ?success=true trên URL
+        window.onload = function() {
+            if (window.location.search.includes('success=true')) {
+                document.getElementById('form-box').classList.add('hidden-form');
+                document.getElementById('success-box').classList.add('show');
+            }
+        };
+        
+        // Tải lại form để thêm tiếp
+        function taiLaiForm() {
+            window.location.href = window.location.pathname;
+        }
+    </script>
 </body>
 </html>
