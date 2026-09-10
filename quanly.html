@@ -34,13 +34,11 @@
         <input type="password" id="p12-pass" placeholder="Nhập mật khẩu P12">
         <button class="btn-blue" onclick="addCert()">Thêm vào Kho Chứng Chỉ</button>
     </div>
-
     <div class="card">
         <h2>2. Danh sách Chứng Chỉ Đã Lưu</h2>
         <input type="text" class="search-box" id="search-cert" placeholder="Tìm kiếm chứng chỉ..." oninput="renderCerts()">
         <div id="cert-list"></div>
     </div>
-
     <div class="card">
         <h2>3. Upload Game / Ứng Dụng (.ipa)</h2>
         <label>Tên Ứng Dụng:</label>
@@ -49,61 +47,21 @@
         <input type="file" id="ipa-file" accept=".ipa" style="margin-bottom:16px">
         <button class="btn-blue" onclick="addApp()">Upload & Lưu vào Kho</button>
     </div>
-
     <div class="card">
         <h2>4. Danh sách Ứng Dụng Trên Hệ Thống</h2>
         <div id="app-list"></div>
     </div>
-
     <script>
         let certs=JSON.parse(localStorage.getItem('certs')||'[]');
         let apps=JSON.parse(localStorage.getItem('apps')||'[]');
- function save(){
-            localStorage.setItem('certs',JSON.stringify(certs));
-            localStorage.setItem('apps',JSON.stringify(apps));
-        }
-        function nowStr(){
-            const d=new Date();
-            return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')} ${d.getHours()>=12?'PM':'AM'}`;
-        }
-        function addCert(){
-            const n=document.getElementById('cert-name').value.trim();
-            const f=document.getElementById('cert-zip').files[0];
-            const p=document.getElementById('p12-pass').value;
-            if(!n||!f){alert('⚠️ Nhập tên và chọn file ZIP!');return;}
-            certs.unshift({id:Date.now(),name:n,date:nowStr(),file:f.name,pass:p});
-            save();renderCerts();
-            document.getElementById('cert-name').value='';
-            document.getElementById('cert-zip').value='';
-            document.getElementById('p12-pass').value='';
-            alert('✅ Thêm chứng chỉ thành công!');
-        }
-        function delCert(id){
-            if(confirm('❌ Xóa chứng chỉ này?')){certs=certs.filter(c=>c.id!==id);save();renderCerts();}
-        }
-        function renderCerts(){
-            const q=document.getElementById('search-cert').value.toLowerCase();
-            const el=document.getElementById('cert-list');
-            const f=certs.filter(c=>c.name.toLowerCase().includes(q));
-            el.innerHTML=f.length?f.map(c=>`<div class="item-row"><div><div class="item-name">${c.name}</div><div class="item-date">${c.date}</div></div><button class="btn-delete" onclick="delCert(${c.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có chứng chỉ nào</p>';
-        }
-        function addApp(){
-            const n=document.getElementById('app-name').value.trim();
-            const f=document.getElementById('ipa-file').files[0];
-            if(!n||!f){alert('⚠️ Nhập tên và chọn file IPA!');return;}
-            apps.unshift({id:Date.now(),name:n,file:f.name,size:(f.size/1024/1024).toFixed(2)+' MB'});
-            save();renderApps();
-            document.getElementById('app-name').value='';
-            document.getElementById('ipa-file').value='';
-            alert('✅ Upload ứng dụng thành công!');
-        }
-        function delApp(id){
-            if(confirm('❌ Xóa ứng dụng này?')){apps=apps.filter(a=>a.id!==id);save();renderApps();}
-        }
-        function renderApps(){
-            const el=document.getElementById('app-list');
-            el.innerHTML=apps.length?apps.map(a=>`<div class="item-row"><div><div class="item-name">${a.name}</div><div class="item-date">${a.file} • ${a.size}</div></div><button class="btn-delete" onclick="delApp(${a.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có ứng dụng nào</p>';
-        }
+        function save(){localStorage.setItem('certs',JSON.stringify(certs));localStorage.setItem('apps',JSON.stringify(apps));}
+        function nowStr(){const d=new Date();return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')} ${d.getHours()>=12?'PM':'AM'}`;}
+        function addCert(){const n=document.getElementById('cert-name').value.trim();const f=document.getElementById('cert-zip').files[0];const p=document.getElementById('p12-pass').value;if(!n||!f){alert('⚠️ Nhập tên và chọn file ZIP!');return;}certs.unshift({id:Date.now(),name:n,date:nowStr(),file:f.name,pass:p});save();renderCerts();document.getElementById('cert-name').value='';document.getElementById('cert-zip').value='';document.getElementById('p12-pass').value='';alert('✅ Thêm chứng chỉ thành công!');}
+        function delCert(id){if(confirm('❌ Xóa?')){certs=certs.filter(c=>c.id!==id);save();renderCerts();}}
+        function renderCerts(){const q=document.getElementById('search-cert').value.toLowerCase();const el=document.getElementById('cert-list');const f=certs.filter(c=>c.name.toLowerCase().includes(q));el.innerHTML=f.length?f.map(c=>`<div class="item-row"><div><div class="item-name">${c.name}</div><div class="item-date">${c.date}</div></div><button class="btn-delete" onclick="delCert(${c.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có chứng chỉ nào</p>';}
+        function addApp(){const n=document.getElementById('app-name').value.trim();const f=document.getElementById('ipa-file').files[0];if(!n||!f){alert('⚠️ Nhập tên và chọn file IPA!');return;}apps.unshift({id:Date.now(),name:n,file:f.name,size:(f.size/1024/1024).toFixed(2)+' MB'});save();renderApps();document.getElementById('app-name').value='';document.getElementById('ipa-file').value='';alert('✅ Upload thành công!');}
+        function delApp(id){if(confirm('❌ Xóa?')){apps=apps.filter(a=>a.id!==id);save();renderApps();}}
+        function renderApps(){const el=document.getElementById('app-list');el.innerHTML=apps.length?apps.map(a=>`<div class="item-row"><div><div class="item-name">${a.name}</div><div class="item-date">${a.file} • ${a.size}</div></div><button class="btn-delete" onclick="delApp(${a.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có ứng dụng nào</p>';}
         renderCerts();renderApps();
     </script>
 </body>
