@@ -1,68 +1,83 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Trị Đa Chứng Chỉ & IPA</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-        body{background:#f5f7fa;padding:20px;max-width:520px;margin:0 auto}
-        .card{background:#fff;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-        h2{font-size:17px;color:#1f2937;margin-bottom:16px;font-weight:600}
-        .badge-zip{background:#8b5cf6;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:6px}
-        label{display:block;font-size:14px;color:#374151;margin-bottom:8px}
-        input[type="text"],input[type="password"]{width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:15px;margin-bottom:16px;outline:none}
-        input:focus{border-color:#3b82f6}
-        .btn-blue{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer}
-        .btn-blue:hover{background:#1d4ed8}
-        .search-box{width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;margin-bottom:16px}
-        .item-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f3f4f6}
-        .item-name{font-size:15px;color:#1f2937}
-        .item-date{font-size:12px;color:#9ca3af;margin-top:2px}
-        .btn-delete{background:#ef4444;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer}
-        .empty{color:#9ca3af;font-size:14px;text-align:center;padding:10px}
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h2>1. Thêm Chứng Chỉ Mới <span class="badge-zip">.zip chứa .p12 & .mobileprovision</span></h2>
-        <label>Tên gợi nhớ chứng chỉ:</label>
-        <input type="text" id="cert-name" placeholder="VD: Slot khách A / Slot VIP...">
-        <label>File ZIP chứng chỉ:</label>
-        <input type="file" id="cert-zip" accept=".zip" style="margin-bottom:16px">
-        <label>Mật khẩu P12:</label>
-        <input type="password" id="p12-pass" placeholder="Nhập mật khẩu P12">
-        <button class="btn-blue" onclick="addCert()">Thêm vào Kho Chứng Chỉ</button>
-    </div>
-    <div class="card">
-        <h2>2. Danh sách Chứng Chỉ Đã Lưu</h2>
-        <input type="text" class="search-box" id="search-cert" placeholder="Tìm kiếm chứng chỉ..." oninput="renderCerts()">
-        <div id="cert-list"></div>
-    </div>
-    <div class="card">
-        <h2>3. Upload Game / Ứng Dụng (.ipa)</h2>
-        <label>Tên Ứng Dụng:</label>
-        <input type="text" id="app-name" placeholder="VD: Liên Quân Mobile">
-        <label>File IPA:</label>
-        <input type="file" id="ipa-file" accept=".ipa" style="margin-bottom:16px">
-        <button class="btn-blue" onclick="addApp()">Upload & Lưu vào Kho</button>
-    </div>
-    <div class="card">
-        <h2>4. Danh sách Ứng Dụng Trên Hệ Thống</h2>
-        <div id="app-list"></div>
-    </div>
-    <script>
-        let certs=JSON.parse(localStorage.getItem('certs')||'[]');
-        let apps=JSON.parse(localStorage.getItem('apps')||'[]');
-        function save(){localStorage.setItem('certs',JSON.stringify(certs));localStorage.setItem('apps',JSON.stringify(apps));}
-        function nowStr(){const d=new Date();return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')} ${d.getHours()>=12?'PM':'AM'}`;}
-        function addCert(){const n=document.getElementById('cert-name').value.trim();const f=document.getElementById('cert-zip').files[0];const p=document.getElementById('p12-pass').value;if(!n||!f){alert('⚠️ Nhập tên và chọn file ZIP!');return;}certs.unshift({id:Date.now(),name:n,date:nowStr(),file:f.name,pass:p});save();renderCerts();document.getElementById('cert-name').value='';document.getElementById('cert-zip').value='';document.getElementById('p12-pass').value='';alert('✅ Thêm chứng chỉ thành công!');}
-        function delCert(id){if(confirm('❌ Xóa?')){certs=certs.filter(c=>c.id!==id);save();renderCerts();}}
-        function renderCerts(){const q=document.getElementById('search-cert').value.toLowerCase();const el=document.getElementById('cert-list');const f=certs.filter(c=>c.name.toLowerCase().includes(q));el.innerHTML=f.length?f.map(c=>`<div class="item-row"><div><div class="item-name">${c.name}</div><div class="item-date">${c.date}</div></div><button class="btn-delete" onclick="delCert(${c.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có chứng chỉ nào</p>';}
-        function addApp(){const n=document.getElementById('app-name').value.trim();const f=document.getElementById('ipa-file').files[0];if(!n||!f){alert('⚠️ Nhập tên và chọn file IPA!');return;}apps.unshift({id:Date.now(),name:n,file:f.name,size:(f.size/1024/1024).toFixed(2)+' MB'});save();renderApps();document.getElementById('app-name').value='';document.getElementById('ipa-file').value='';alert('✅ Upload thành công!');}
-        function delApp(id){if(confirm('❌ Xóa?')){apps=apps.filter(a=>a.id!==id);save();renderApps();}}
-        function renderApps(){const el=document.getElementById('app-list');el.innerHTML=apps.length?apps.map(a=>`<div class="item-row"><div><div class="item-name">${a.name}</div><div class="item-date">${a.file} • ${a.size}</div></div><button class="btn-delete" onclick="delApp(${a.id})">Xóa</button></div>`).join(''):'<p class="empty">Chưa có ứng dụng nào</p>';}
-        renderCerts();renderApps();
-    </script>
-</body>
-</html>
+<!-- === QUẢN LÝ KHÁCH & IPA === -->
+<div class="card">
+    <h2>6. Quản Lý Khách & Link Tải</h2>
+    <label>UDID của khách:</label>
+    <input type="text" id="khach-udid" placeholder="VD: 12345678-1234567890ABCDEF">
+    
+    <label>Tên ứng dụng:</label>
+    <input type="text" id="khach-appname" placeholder="VD: Liên Quân Mobile">
+    
+    <label>Link tải IPA:</label>
+    <input type="text" id="khach-link" placeholder="VD: https://...ipa">
+    
+    <button class="btn-blue" onclick="themKhach()">Thêm Khách & Link</button>
+</div>
+
+<div class="card">
+    <h2>7. Danh Sách Khách</h2>
+    <div id="khach-list"></div>
+</div>
+
+<script>
+// === QUẢN LÝ KHÁCH ===
+let khachList = JSON.parse(localStorage.getItem('khachList') || '[]');
+
+function luuKhach() {
+    localStorage.setItem('khachList', JSON.stringify(khachList));
+}
+
+function themKhach() {
+    const udid = document.getElementById('khach-udid').value.trim();
+    const appname = document.getElementById('khach-appname').value.trim();
+    const link = document.getElementById('khach-link').value.trim();
+    
+    if (!udid || !appname || !link) {
+        alert('⚠️ Điền đủ UDID, Tên app và Link nhé!');
+        return;
+    }
+    
+    khachList.unshift({
+        id: Date.now(),
+        udid: udid.toUpperCase(),
+        appname,
+        link
+    });
+    
+    luuKhach();
+    renderKhach();
+    
+    document.getElementById('khach-udid').value = '';
+    document.getElementById('khach-appname').value = '';
+    document.getElementById('khach-link').value = '';
+    
+    alert('✅ Thêm thành công! Khách vào trang chủ gõ UDID là thấy!');
+}
+
+function xoaKhach(id) {
+    if (confirm('❌ Xóa khách này?')) {
+        khachList = khachList.filter(k => k.id !== id);
+        luuKhach();
+        renderKhach();
+    }
+}
+
+function renderKhach() {
+    const el = document.getElementById('khach-list');
+    if (khachList.length === 0) {
+        el.innerHTML = '<p class="empty">Chưa có khách nào</p>';
+        return;
+    }
+    el.innerHTML = khachList.map(k => `
+        <div class="item-row">
+            <div style="max-width:70%">
+                <div class="item-name">${k.appname}</div>
+                <div class="item-date" style="font-size:11px;word-break:break-all;">${k.udid}</div>
+                <div class="item-date" style="font-size:10px;color:#6b7280;word-break:break-all;">${k.link}</div>
+            </div>
+            <button class="btn-delete" onclick="xoaKhach(${k.id})">Xóa</button>
+        </div>
+    `).join('');
+}
+
+renderKhach();
+</script>
