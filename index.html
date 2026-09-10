@@ -5,7 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kho Game VIP</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
-        body{background:linear-gradient(135deg,#0f172a,#1e293b);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
-        .rocket{font-size:60px;margin-bottom:10px}
-        h1{color:#fff;font-size
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .rocket {
+            font-size: 70px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 32px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .box {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 15px;
+            margin-bottom: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        input:focus {
+            border-color: #3b82f6;
+        }
+        input::placeholder {
+            color: #64748b;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+        button:hover {
+            opacity: 0.95;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 999;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 360px;
+        }
+        .modal-title {
+            color: #fff;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .game-item {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+        .game-name {
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            display: block;
+            background: #10b981;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .download-btn:hover {
+            background: #059669;
+        }
+        .close-btn {
+            margin-top: 16px;
+            background: #475569;
+        }
+        .close-btn:hover {
+            background: #334155;
+        }
+        .empty-text {
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="rocket">🚀</div>
+    <h1>Kho Game VIP</h1>
+    <p class="subtitle">Hệ thống tự động nhận diện UDID của bạn</p>
+
+    <div class="box">
+        <input type="text" id="udid-input" placeholder="Nhập UDID thiết bị của bạn">
+        <input type="password" placeholder="Mật khẩu chứng chỉ P12 (không bắt buộc)">
+        <button onclick="xemGame()">Vào kho game</button>
+    </div>
+
+    <!-- Hộp thoại kết quả -->
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-box">
+            <h3 class="modal-title">🎮 Game của bạn</h3>
+            <div id="game-list"></div>
+            <button class="close-btn" onclick="dongModal()">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // SAO CHÉP LINK CSV CỦA GOOGLE SHEETS CỦA BỐ VÀO DƯỚI DÒNG NÀY
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/ĐIỀN_LINK_CỦA_BỐ_VÀO_DÂY/pub?output=csv";
+        // ==========================================
+
+        let dataCache = null;
+
+        async function taiDuLieu() {
+            if (dataCache) return dataCache;
+            try {
+                const res = await fetch(SHEET_URL);
+                const text = await res.text();
+                const lines = text.split('\n').slice(1);
+                dataCache = lines.map(line => {
+                    const parts = line.split(',');
+                    return {
+                        udid: (parts[0] || '').trim().toUpperCase(),
+                        name: (parts[1] || '').trim(),
+                        link: (parts[2] || '').trim()
+                    };
+                }).filter(item => item.udid && item.name);
+                return dataCache;
+            } catch (e) {
+                console.error('Lỗi tải dữ liệu:', e);
+                return [];
+            }
+        }
+
+        async function xemGame() {
+            const udidNhap = document.getElementById('udid-input').value.trim().toUpperCase();
+            const gameListEl = document.getElementById('game-list');
+            const modal = document.getElementById('result-modal');
+
+            if (!udidNhap) {
+                alert('⚠️ Vui lòng nhập UDID!');
+                return;
+            }
+
+            gameListEl.innerHTML = '<p style="color:#fff;text-align:center;">Đang kiểm tra...</p>';
+            modal.classList.add('show');
+
+            const dsGame = await taiDuLieu();
+            const gameCuaKhach = dsGame.filter(g => g.udid === udidNhap);
+
+            if (gameCuaKhach.length === 0) {
+                gameListEl.innerHTML = '<p class="empty-text">❌ UDID chưa được cấp game nào<br>Liên hệ quản trị viên nhé!</p>';
+            } else {
+                gameListEl.innerHTML = gameCuaKhach.map(g => `
+                    <div class="game-item">
+                        <div class="game-name">🎮 ${g.name}</div>
+                        <a href="${g.link}" target="_blank" class="download-btn">📥 Tải File IPA</a>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function dongModal() {
+            document.getElementById('result-modal').classList.remove('show');
+        }
+
+        // Đóng khi nhấn ra ngoài
+        document.getElementById('result-modal').addEventListener('click', function(e) {
+            if (e.target === this) dongModal();
+        });
+    </script>
+</body>
+</html>
