@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kho Game VIP</title>
+    <title>Danh sách Ứng Dụng</title>
     <style>
         * {
             margin: 0;
@@ -12,167 +12,116 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background-color: #f5f5f7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            justify-content: flex-start;
+            padding: 60px 20px;
         }
-        .rocket {
-            font-size: 70px;
-            margin-bottom: 10px;
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 420px;
         }
-        h1 {
-            color: #ffffff;
-            font-size: 32px;
-            margin-bottom: 8px;
+        .game-icon {
             text-align: center;
-        }
-        .subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        .box {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 35px 25px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 15px;
-            margin-bottom: 14px;
-            outline: none;
-            transition: border 0.2s;
-        }
-        input:focus {
-            border-color: #3b82f6;
-        }
-        input::placeholder {
-            color: #64748b;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: opacity 0.2s;
-        }
-        button:hover {
-            opacity: 0.95;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 999;
-        }
-        .modal-overlay.show {
-            display: flex;
-        }
-        .modal-box {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 30px 25px;
-            width: 100%;
-            max-width: 360px;
-        }
-        .modal-title {
-            color: #fff;
-            font-size: 20px;
-            text-align: center;
+            font-size: 60px;
             margin-bottom: 20px;
         }
-        .game-item {
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 15px;
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #1d1d1f;
             margin-bottom: 12px;
         }
-        .game-name {
-            color: #fff;
-            font-size: 15px;
-            margin-bottom: 10px;
-        }
-        .download-btn {
-            display: block;
-            background: #10b981;
-            color: #fff;
-            padding: 10px;
-            border-radius: 8px;
+        .subtitle {
             text-align: center;
-            text-decoration: none;
+            font-size: 15px;
+            color: #86868b;
+            margin-bottom: 30px;
+        }
+        .udid-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            font-size: 15px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .check-btn {
+            width: 100%;
+            padding: 14px;
+            background: #007aff;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+        .app-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e5e7;
+        }
+        .app-item:last-child {
+            border-bottom: none;
+        }
+        .app-name {
+            font-size: 17px;
+            color: #1d1d1f;
+        }
+        .install-btn {
+            background: #34c759;
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 22px;
             font-size: 15px;
             font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
         }
-        .download-btn:hover {
-            background: #059669;
-        }
-        .close-btn {
-            margin-top: 16px;
-            background: #475569;
-        }
-        .close-btn:hover {
-            background: #334155;
+        .hidden {
+            display: none !important;
         }
         .empty-text {
-            color: #94a3b8;
+            color: #86868b;
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
+            padding: 30px 20px;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="rocket">🚀</div>
-    <h1>Kho Game VIP</h1>
-    <p class="subtitle">Hệ thống tự động nhận diện UDID của bạn</p>
-
-    <div class="box">
-        <input type="text" id="udid-input" placeholder="Nhập UDID thiết bị của bạn">
-        <input type="password" placeholder="Mật khẩu chứng chỉ P12 (không bắt buộc)">
-        <button onclick="xemGame()">Vào kho game</button>
+    <div class="container" id="login-box">
+        <div class="game-icon">🎮</div>
+        <h1>Kiểm tra UDID</h1>
+        <p class="subtitle">Nhập UDID của bạn để xem danh sách ứng dụng</p>
+        <input type="text" id="udid-input" class="udid-input" placeholder="VD: 00008110-000869CE110A801E">
+        <button class="check-btn" onclick="kiemTraUDID()">Xem ứng dụng của tôi</button>
     </div>
 
-    <!-- Hộp thoại kết quả -->
-    <div class="modal-overlay" id="result-modal">
-        <div class="modal-box">
-            <h3 class="modal-title">🎮 Game của bạn</h3>
-            <div id="game-list"></div>
-            <button class="close-btn" onclick="dongModal()">Đóng</button>
-        </div>
+    <div class="container hidden" id="app-box">
+        <div class="game-icon">🎮</div>
+        <h1>Danh sách Ứng Dụng</h1>
+        <p class="subtitle">Bấm cài đặt để hệ thống tự động ký và tải về</p>
+        
+        <div id="app-list"></div>
     </div>
 
     <script>
         // ==========================================
-        // SAO CHÉP LINK CSV CỦA GOOGLE SHEETS CỦA BỐ VÀO DƯỚI DÒNG NÀY
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/ĐIỀN_LINK_CỦA_BỐ_VÀO_DÂY/pub?output=csv";
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQmBh4WMKkQdo2edPB1uyEbmtn4K2w5mh5B08qXtHMbSmYoZot8r8dzX-CU4Ezt9_J-3rzbr2xYj2kd/pub?output=tsv";
         // ==========================================
 
         let dataCache = null;
@@ -184,7 +133,7 @@
                 const text = await res.text();
                 const lines = text.split('\n').slice(1);
                 dataCache = lines.map(line => {
-                    const parts = line.split(',');
+                    const parts = line.split('\t');
                     return {
                         udid: (parts[0] || '').trim().toUpperCase(),
                         name: (parts[1] || '').trim(),
@@ -198,42 +147,33 @@
             }
         }
 
-        async function xemGame() {
+        async function kiemTraUDID() {
             const udidNhap = document.getElementById('udid-input').value.trim().toUpperCase();
-            const gameListEl = document.getElementById('game-list');
-            const modal = document.getElementById('result-modal');
-
             if (!udidNhap) {
                 alert('⚠️ Vui lòng nhập UDID!');
                 return;
             }
 
-            gameListEl.innerHTML = '<p style="color:#fff;text-align:center;">Đang kiểm tra...</p>';
-            modal.classList.add('show');
-
             const dsGame = await taiDuLieu();
             const gameCuaKhach = dsGame.filter(g => g.udid === udidNhap);
 
             if (gameCuaKhach.length === 0) {
-                gameListEl.innerHTML = '<p class="empty-text">❌ UDID chưa được cấp game nào<br>Liên hệ quản trị viên nhé!</p>';
-            } else {
-                gameListEl.innerHTML = gameCuaKhach.map(g => `
-                    <div class="game-item">
-                        <div class="game-name">🎮 ${g.name}</div>
-                        <a href="${g.link}" target="_blank" class="download-btn">📥 Tải File IPA</a>
-                    </div>
-                `).join('');
+                alert('❌ UDID chưa được cấp ứng dụng nào\nLiên hệ quản trị viên nhé!');
+                return;
             }
-        }
 
-        function dongModal() {
-            document.getElementById('result-modal').classList.remove('show');
-        }
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('app-box').classList.remove('hidden');
 
-        // Đóng khi nhấn ra ngoài
-        document.getElementById('result-modal').addEventListener('click', function(e) {
-            if (e.target === this) dongModal();
-        });
+            const html = gameCuaKhach.map(g => `
+                <div class="app-item">
+                    <span class="app-name">${g.name}</span>
+                    <a href="${g.link}" target="_blank" class="install-btn">Cài đặt</a>
+                </div>
+            `).join('');
+            
+            document.getElementById('app-list').innerHTML = html;
+        }
     </script>
 </body>
 </html>
